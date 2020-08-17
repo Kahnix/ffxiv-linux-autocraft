@@ -1,0 +1,32 @@
+#! /bin/bash
+gaps=${1:-45}
+macrokey=${2:-r}
+
+function getWindowID (){
+  # Get window ID for ffxiv
+  PID=$(xdotool search --name "Final Fantasy XIV")
+}
+
+function craft {
+echo "Craft Initiated!" && sleep 3 && xdotool windowactivate ${PID} && sleep 0.5 && xdotool key Page_Down && sleep 0.4 && xdotool key Page_Down && sleep 0.4 && xdotool key Page_Down && sleep 1 && xdotool key Page_Down && sleep 1 && xdotool key ${macrokey} && sleep ${gaps}
+}
+
+function init(){
+  #outputs hello text and sets vargs
+  sleep 1 && echo "---------------------------------"
+  sleep 1 && echo "FFXIV Automator by Kazpa "
+  sleep 1 && echo "---------------------------------"
+  sleep 1 && echo "Duration between crafts (Default: 45 seconds): ${gaps}"
+  sleep 1 && getWindowID && echo "Window ID:" ${PID}
+  sleep 1 && echo "Macro Key (Default: r):" ${macrokey}
+  sleep 1 && echo "---------------------------------"
+}
+
+init
+sleep 1
+echo "Please use CTRL + C to stop the script when you want to stop crafting."
+sleep 3
+
+while true; do
+  craft
+done
