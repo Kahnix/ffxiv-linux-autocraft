@@ -8,7 +8,7 @@ function getWindowID (){
 }
 
 function craft {
-echo "Craft Initiated!" && sleep 3 && xdotool windowactivate ${PID} && sleep 0.5 && xdotool key Page_Down && sleep 0.4 && xdotool key Page_Down && sleep 0.4 && xdotool key Page_Down && sleep 1 && xdotool key Page_Down && sleep 1 && xdotool key ${macrokey} && sleep ${gaps}
+echo "Craft Initiated!" && sleep 2 && xdotool windowactivate ${PID} && sleep 0.5 && xdotool key Page_Down && sleep 0.5 && xdotool key Page_Down && xdotool key Page_Down && sleep 0.4 && sleep 0.4 && xdotool key Page_Down && sleep 0.4 && xdotool key Page_Down && sleep 1 && xdotool key Page_Down && sleep 1 && xdotool key ${macrokey} && sleep ${gaps}
 }
 
 function init(){
