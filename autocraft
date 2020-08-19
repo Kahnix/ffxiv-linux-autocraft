@@ -77,7 +77,12 @@ function displayHelp() {
   FFXIV Autocraft
   -------
   An autocrafting script which navigates the menu and presses your crafting macros
-  set your OK key from NUM_0 to PG_DOWN ingame. 
+  
+  Setup
+  -------
+  set your OK key from NUM_0 to PG_DOWN ingame. Put your macro on either r or set the keys
+  using -k. Open the crafting menu and select the item you want autocrafted by clicking the item.
+  You should not press the synthesise key, just leave it on the menu.
 
   Paramaters
   -------
@@ -91,6 +96,13 @@ function displayHelp() {
 
   -h | --help
           Display this menu and exit.
+
+  Limitations
+  -------
+  Unfortunately this program will steal focus and the script is semi relaible
+  due to the limitations of not reading game memory it is unavoidable and you
+  do have to leave your keyboard alone every time you get a notification or hear the sound
+  
   """
   exit
 }
