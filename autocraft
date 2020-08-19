@@ -20,6 +20,46 @@
 # specify amount of crafts
 # implementing a pause feature
 
+function displayHelp() {
+  echo """
+  FFXIV Autocraft
+  -------
+  An autocrafting script which navigates the menu and presses your crafting macros
+  
+  Setup
+  -------
+  set your OK key from NUM_0 to PG_DOWN ingame. Put your macro on either r or set the keys
+  using -k. Open the crafting menu and select the item you want autocrafted by clicking the item.
+  You should not press the synthesise key, just leave it on the menu.
+
+  Paramaters
+  -------
+  -c | --crafts <amount of crafts>
+          Specify amount of crafting attempts if you do not want the program to loop infinitely.
+          Default is infinite.
+
+  -d | --duration <sec> 
+          Specify the duration the program should wait before craft, 45 is the safe amount for most crafts
+          however 35 seems to work much faster, adjust as needed
+  
+  -k | --keys <key>
+          Specify which macro keys you want to be pressed, refer to the xdotool key list for examples of
+          available keys. Supports 2 keys too for long macros.
+
+  -h | --help
+          Display this menu and exit.
+
+
+  Limitations
+  -------
+  Unfortunately this program will steal focus and the script is semi relaible
+  due to the limitations of not reading game memory it is unavoidable and you
+  do have to leave your keyboard alone every time you get a notification or hear the sound
+  
+  """
+}
+
+
 #Handling paramaters given to the script during exectuion
 while :; do
   case $1 in
