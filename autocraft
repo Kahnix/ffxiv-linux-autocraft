@@ -1,32 +1,133 @@
 #! /bin/bash
-gaps=${1:-45}
-macrokey=${2:-r}
+
+#     _____________  __ _____    __   ___   __  ____________  __________  ___    ____________
+#    / ____/ ____| |/ //  _| |  / /  /   | / / / /_  __/ __ \/ ____/ __ \/   |  / ____/_  __/
+#   / /_  / /_   |   / / / | | / /  / /| |/ / / / / / / / / / /   / /_/ / /| | / /_    / /   
+#  / __/ / __/  /   |_/ /  | |/ /  / ___ / /_/ / / / / /_/ / /___/ _, _/ ___ |/ __/   / /    
+# /_/   /_/    /_/|_/___/  |___/  /_/  |_\____/ /_/  \____/\____/_/ |_/_/  |_/_/     /_/     
+#                                                                      
+# A bash script that inputs macro keys after a specific duration focused on the final fantasy window.   
+# in order for it to work, ensure you have the materials and have clicked on the item you want to craft in the menu.
+# Works amazingly for the firnament                                                                                        
+# Author: Brigdan
+
+#TODO
+# Implement dependency checking
+# Write small install script
+# Write Helpdoc
+# auto install dependencies
+# open link to ffxiv autocrafter to for easy access to creating new macros
+# specify amount of crafts
+# implementing a pause feature
+
+#Handling paramaters given to the script during exectuion
+while :; do
+case $1 in
+      -h|--help|\?)
+      displayHelp # still need to write the help doc
+      exit
+    ;;
+    -d|--duration)
+      if [ "$2" ]; then
+      duration=$2
+      echo "Duration set to $duration seconds." 
+      shift
+      else
+        echo "Please enter a duration in seconds."
+        exit
+      fi
+    ;;
+    -k|--keys)
+      if [ "$3" ]; then #if user gives 2 paramaters 
+      keys=() # create an empty list
+      keys[0]=$2 #append key values, theres probably a better way of doing this but whatever
+      keys[1]=$3
+      twokey=true; #set for displaying output properly
+      shift
+      shift
+      shift #Move $3 back to $1 for the next paramater
+      echo "${keys[0]} and ${keys[1]} loaded as keys."
+      elif [ "$2" ]; then
+      keys=$2 #set to a single key otherwise
+      twokey = false
+      shift
+      echo "$keys loaded as key."
+      else
+        echo "Please enter a valid key combination (1 or 2 keys)"
+        exit
+      fi
+    ;;
+    *) #unknown option
+        break
+    ;;
+esac
+done
+
+function main(){
+  if test -z $keys; then
+    keys=r # set default key value if the user just runs the program
+  fi
+  gaps=${duration:=45} #Set to the default value if duration is not set
+  craftAmount=0
+  displayMenu
+}
+
+function displayHelp(){
+  echo "Help coming soon."
+  exit
+}
 
 function getWindowID (){
-  # Get window ID for ffxiv
+  # Get window ID for ffxiv to focus whenever a craft runs
   PID=$(xdotool search --name "Final Fantasy XIV")
 }
 
 function craft {
-echo "Craft Initiated!" && sleep 2 && xdotool windowactivate ${PID} && sleep 0.5 && xdotool key Page_Down && sleep 0.5 && xdotool key Page_Down && xdotool key Page_Down && sleep 0.4 && sleep 0.4 && xdotool key Page_Down && sleep 0.4 && xdotool key Page_Down && sleep 1 && xdotool key Page_Down && sleep 1 && xdotool key ${macrokey} && sleep ${gaps}
+    echo "Craft Initiated!"
+    sleep 2
+    xdotool windowactivate ${PID}
+    sleep 0.5
+    xdotool key Page_Down
+    sleep 0.5
+    xdotool key Page_Down
+    xdotool key Page_Down
+    sleep 0.4
+    sleep 0.4
+    xdotool key Page_Down
+    sleep 0.4
+    xdotool key Page_Down
+    sleep 1
+    xdotool key Page_Down
+    sleep 1
+    xdotool key ${macrokey}
+    sleep ${gaps}
+    craftAmount+=1 #for output of total crafts
 }
 
-function init(){
-  #outputs hello text and sets vargs
-  sleep 1 && echo "---------------------------------"
-  sleep 1 && echo "FFXIV Automator by Kazpa "
-  sleep 1 && echo "---------------------------------"
-  sleep 1 && echo "Duration between crafts (Default: 45 seconds): ${gaps}"
-  sleep 1 && getWindowID && echo "Window ID:" ${PID}
-  sleep 1 && echo "Macro Key (Default: r):" ${macrokey}
-  sleep 1 && echo "---------------------------------"
+function displayMenu(){
+  sleep 0.5 && echo "---------------------------------"
+  sleep 0.5 && echo "FFXIV Automator by Kazpa "
+  sleep 0.5 && echo "---------------------------------"
+  sleep 0.5 && echo "Duration between crafts (Default: 45 seconds): ${duration}"
+  sleep 0.5 && getWindowID && echo "Window ID:" ${PID}
+  if $twokey -eq true;then
+    echo "Macro Keys: ${keys[0]} and ${keys[1]}"
+  else
+    sleep 0.5 && echo "Macro Keys: $keys"
+  fi
+  sleep 0.5 && echo "---------------------------------"
+  sleep 0.5 && echo "Crafts Complete: $craftAmount"
+  sleep 0.5 && echo "---------------------------------"
+  sleep 0.5
+  echo "Please use CTRL + C to stop the script when you want to stop crafting."
+  sleep 3
 }
 
-init
-sleep 1
-echo "Please use CTRL + C to stop the script when you want to stop crafting."
-sleep 3
+main
+
 
 while true; do
   craft
+  clear
+  displayMenu
 done
