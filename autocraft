@@ -17,7 +17,6 @@
 # Write Helpdoc
 # auto install dependencies
 # open link to ffxiv autocrafter to for easy access to creating new macros
-# specify amount of crafts
 # implementing a pause feature
 
 function displayHelp() {
@@ -47,7 +46,7 @@ function displayHelp() {
           available keys. Supports 2 keys too for long macros.
 
   -h | --help
-          Display this menu and exit.
+          Display this text and exit.
 
 
   Limitations
@@ -66,7 +65,7 @@ while :; do
   -h | --help | \?)
     displayHelp # still need to write the help doc
     exit
-    ;;
+    ;; 
   -d | --duration)
     if [ "$2" ]; then
       duration=$2
@@ -107,44 +106,15 @@ function main() {
   if test -z $keys; then
     keys=r # set default key value if the user just runs the program
   fi
+
   gaps=${duration:=45} #Set to the default value if duration is not set
-  craftAmount=0
   displayMenu
-}
 
-function displayHelp() {
-  echo """
-  FFXIV Autocraft
-  -------
-  An autocrafting script which navigates the menu and presses your crafting macros
-  
-  Setup
-  -------
-  set your OK key from NUM_0 to PG_DOWN ingame. Put your macro on either r or set the keys
-  using -k. Open the crafting menu and select the item you want autocrafted by clicking the item.
-  You should not press the synthesise key, just leave it on the menu.
+  while true; do
+    craft
+    displayMenu
+  done
 
-  Paramaters
-  -------
-  -d | --duration <sec> 
-          Specify the duration the program should wait before craft, 45 is the safe amount for most crafts
-          however 35 seems to work much faster, adjust as needed
-  
-  -k | --keys <key>
-          Specify which macro keys you want to be pressed, refer to the xdotool key list for examples of
-          available keys. Supports 2 keys too for long macros.
-
-  -h | --help
-          Display this menu and exit.
-
-  Limitations
-  -------
-  Unfortunately this program will steal focus and the script is semi relaible
-  due to the limitations of not reading game memory it is unavoidable and you
-  do have to leave your keyboard alone every time you get a notification or hear the sound
-  
-  """
-  exit
 }
 
 function getWindowID() {
@@ -169,18 +139,25 @@ function craft() {
   sleep 1
   xdotool key Page_Down
   sleep 1
-  xdotool key ${macrokey}
+  if [ "$twokey" == true ]; then
+    xdotool key ${keys[0]}
+    sleep ${gaps}
+    xdotool key ${keys[1]}
+  else
+    xdotool key ${keys}
+  fi
   sleep ${gaps}
-  craftAmount+=1 #for output of total crafts
+  craftAmount+=1 #for output of total craftss
 }
 
 function displayMenu() {
+  clear
   sleep 0.5 && echo "---------------------------------"
   sleep 0.5 && echo "FFXIV Automator by Kazpa "
   sleep 0.5 && echo "---------------------------------"
   sleep 0.5 && echo "Duration between crafts (Default: 45 seconds): ${duration}"
   sleep 0.5 && getWindowID && echo "Window ID:" ${PID}
-  if $twokey -eq true; then
+  if [ "$twokey" == true ]; then
     echo "Macro Keys: ${keys[0]} and ${keys[1]}"
   else
     sleep 0.5 && echo "Macro Keys: $keys"
@@ -194,9 +171,3 @@ function displayMenu() {
 }
 
 main
-
-while true; do
-  craft
-  clear
-  displayMenu
-done
