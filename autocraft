@@ -106,7 +106,7 @@ function main() {
   if test -z $keys; then
     keys=r # set default key value if the user just runs the program
   fi
-
+  craftAmount=0
   gaps=${duration:=45} #Set to the default value if duration is not set
   displayMenu
 
@@ -147,7 +147,8 @@ function craft() {
     xdotool key ${keys}
   fi
   sleep ${gaps}
-  craftAmount+=1 #for output of total craftss
+  i=$((i+1))
+  craftAmount=$((craftAmount+1)) #for output of total craftss
 }
 
 function displayMenu() {
